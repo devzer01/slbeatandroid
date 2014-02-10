@@ -44,6 +44,11 @@ public class Login extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Intent intent = new Intent(Login.this, ChatRoom.class);
+		//startActivity(intent);
+		startService(new Intent(Login.this, ChatService.class));
+		bindService(new Intent(Login.this, ChatService.class), mConnection,
+		        Context.BIND_AUTO_CREATE);
         
         Button loginButton = (Button)findViewById(R.id.btnLogin);
         
@@ -51,12 +56,6 @@ public class Login extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				//Intent intent = new Intent(Login.this, ChatRoom.class);
-				//startActivity(intent);
-				startService(new Intent(Login.this, ChatService.class));
-				bindService(new Intent(Login.this, ChatService.class), mConnection,
-				        Context.BIND_AUTO_CREATE);
-				
 				chatService.connect("devzer0", "secret");
 			}
         	
