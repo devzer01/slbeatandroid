@@ -56,7 +56,7 @@ public class Login extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				chatService.connect("devzer0", "secret");
+				chatService.connect("devzer0", "xxx");
 			}
         	
         });

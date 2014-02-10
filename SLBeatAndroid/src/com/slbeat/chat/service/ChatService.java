@@ -4,11 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Looper;
 import android.widget.Toast;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 
 public class ChatService extends Service {
 
@@ -19,7 +21,6 @@ public class ChatService extends Service {
 	@Override
     public void onCreate() {
         Toast.makeText(this, "The new Service was Created", Toast.LENGTH_LONG).show();
-
     }
 
     @Override
@@ -27,6 +28,12 @@ public class ChatService extends Service {
     	// For time consuming an long tasks you can launch a new thread here...
         Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
 
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
     }
 
     @Override
@@ -58,6 +65,7 @@ public class ChatService extends Service {
 
 	public void connect(final String user, final String pass) {
 		ConnectionConfiguration config = new ConnectionConfiguration("slbeat.com",5222);
+		config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
 
 		connection = new XMPPConnection(config);
 
@@ -65,17 +73,27 @@ public class ChatService extends Service {
 			@Override
 			public void run() {
 	
+				Looper.prepare();
+				
 				try {
 					connection.connect();
 					connection.login(user, pass);
 					if(connection.isConnected()){
+						Toast.makeText(getApplicationContext(), "connected to server", Toast.LENGTH_LONG).show();
 						authenticated = true;
+						
+						MultiUserChat muc2 = new MultiUserChat(connection, "lanka@conference.slbeat.com");
+
+						muc2.join("AndroidBitch");
+						
 					} else {
 						authenticated = false;
 					}
 				} catch (XMPPException e) {
 					e.printStackTrace();
 				}
+				
+				Looper.loop();
 			}
 		}).start();
 	}

@@ -26,6 +26,14 @@
             android:name="com.slbeat.chat.ChatRoom"
             android:label="@string/title_activity_chat_room" >
         </activity>
+        
+        <service
+  			android:name="com.slbeat.chat.service.ChatService"
+  			android:label="chat_service">
+		</service>
+        
     </application>
+    
+    <uses-permission android:name="android.permission.INTERNET" /> 
 
 </manifest>
