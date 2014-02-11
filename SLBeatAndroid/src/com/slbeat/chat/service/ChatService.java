@@ -8,8 +8,11 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 
 public class ChatService extends Service {
@@ -79,12 +82,27 @@ public class ChatService extends Service {
 					connection.connect();
 					connection.login(user, pass);
 					if(connection.isConnected()){
+						
+						Intent intent = new Intent("com.slbeat.chat.LOGIN");
+						ChatService.this.sendBroadcast(intent);
+						
 						Toast.makeText(getApplicationContext(), "connected to server", Toast.LENGTH_LONG).show();
 						authenticated = true;
 						
 						MultiUserChat muc2 = new MultiUserChat(connection, "lanka@conference.slbeat.com");
 
-						muc2.join("AndroidBitch");
+						muc2.join("AndroidBiatch");
+						
+						muc2.sendMessage("kohomada lamai");
+						
+						muc2.addParticipantListener(new PacketListener() {
+
+							@Override
+							public void processPacket(Packet arg0) {
+								System.out.println(arg0.getFrom());
+							}
+							
+						});
 						
 					} else {
 						authenticated = false;

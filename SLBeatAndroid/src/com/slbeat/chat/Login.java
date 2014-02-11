@@ -5,9 +5,11 @@ import com.slbeat.chat.service.ChatService;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
@@ -56,12 +58,26 @@ public class Login extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				chatService.connect("devzer0", "xxx");
+				chatService.connect("devzer0", "V8UAEuP09X");
 			}
         	
         });
+        
+        //register broadcast receiver 
+        IntentFilter filter = new IntentFilter("com.slbeat.chat.LOGIN");
+        registerReceiver(mMyReceiver, filter);
     }
 
+    public BroadcastReceiver mMyReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        	Intent i = new Intent(Login.this, ChatRoom.class);																
+			startActivity(i);
+			Login.this.finish();
+			Login.this.unregisterReceiver(this);
+        }  
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
