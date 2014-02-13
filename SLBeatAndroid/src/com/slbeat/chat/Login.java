@@ -14,6 +14,7 @@ import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class Login extends Activity {
@@ -52,13 +53,16 @@ public class Login extends Activity {
 		bindService(new Intent(Login.this, ChatService.class), mConnection,
 		        Context.BIND_AUTO_CREATE);
         
+		final EditText username = (EditText)findViewById(R.id.username);
+		final EditText password = (EditText)findViewById(R.id.password);
+		
         Button loginButton = (Button)findViewById(R.id.btnLogin);
         
         loginButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				chatService.connect("devzer0", "V8UAEuP09X");
+				chatService.connect(username.getText().toString(), password.getText().toString());
 			}
         	
         });
@@ -72,10 +76,11 @@ public class Login extends Activity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+        	Login.this.unbindService(mConnection);
+        	Login.this.unregisterReceiver(this);
+        	Login.this.finish();
         	Intent i = new Intent(Login.this, ChatRoom.class);																
 			startActivity(i);
-			Login.this.finish();
-			Login.this.unregisterReceiver(this);
         }  
     };
 

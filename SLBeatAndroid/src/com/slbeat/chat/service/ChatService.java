@@ -1,5 +1,8 @@
 package com.slbeat.chat.service;
 
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -19,6 +22,8 @@ public class ChatService extends Service {
 
 	XMPPConnection connection;
 	
+	MultiUserChat muc2;
+	
 	boolean authenticated;
 	
 	@Override
@@ -28,14 +33,11 @@ public class ChatService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-    	// For time consuming an long tasks you can launch a new thread here...
         Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
 
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // We want this service to continue running until it is explicitly
-        // stopped, so return sticky.
         return START_STICKY;
     }
 
@@ -89,11 +91,20 @@ public class ChatService extends Service {
 						Toast.makeText(getApplicationContext(), "connected to server", Toast.LENGTH_LONG).show();
 						authenticated = true;
 						
-						MultiUserChat muc2 = new MultiUserChat(connection, "lanka@conference.slbeat.com");
+						muc2 = new MultiUserChat(connection, "lanka@conference.slbeat.com");
 
-						muc2.join("AndroidBiatch");
+						muc2.join("droid");
 						
 						muc2.sendMessage("kohomada lamai");
+						
+						muc2.addMessageListener(new PacketListener () {
+
+							@Override
+							public void processPacket(Packet arg0) {
+								
+							}
+							
+						});
 						
 						muc2.addParticipantListener(new PacketListener() {
 
@@ -114,6 +125,16 @@ public class ChatService extends Service {
 				Looper.loop();
 			}
 		}).start();
+	}
+	
+	public void sendMessage(String message)
+	{
+		try {
+			muc2.sendMessage(message);
+		} catch (XMPPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 		
 	public void disconnect(){
