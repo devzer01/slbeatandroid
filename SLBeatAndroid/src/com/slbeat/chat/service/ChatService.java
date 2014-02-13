@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackAndroid;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
@@ -81,6 +82,7 @@ public class ChatService extends Service {
 				Looper.prepare();
 				
 				try {
+					SmackAndroid.init(ChatService.this);
 					connection.connect();
 					connection.login(user, pass);
 					if(connection.isConnected()){

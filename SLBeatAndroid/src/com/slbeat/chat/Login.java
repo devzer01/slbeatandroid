@@ -1,5 +1,7 @@
 package com.slbeat.chat;
 
+import org.jivesoftware.smack.SmackAndroid;
+
 import com.slbeat.chat.service.ChatService;
 
 import android.os.Bundle;
